@@ -15,6 +15,8 @@
 		C7B287A226A14C97004B791A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7B2879126A14C97004B791A /* Assets.xcassets */; };
 		C7B287AC26A14CD7004B791A /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B287AB26A14CD7004B791A /* Meal.swift */; };
 		C7B287AD26A14CD7004B791A /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B287AB26A14CD7004B791A /* Meal.swift */; };
+		C7CB24B826A1559C009E1E35 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C7CB24B726A1559C009E1E35 /* README.md */; };
+		C7CB24B926A1559C009E1E35 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C7CB24B726A1559C009E1E35 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,7 @@
 		C7B2879C26A14C97004B791A /* FreeMeal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreeMeal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7B287AB26A14CD7004B791A /* Meal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
 		C7B287AE26A14D1B004B791A /* FreeMeal (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FreeMeal (iOS).entitlements"; sourceTree = "<group>"; };
+		C7CB24B726A1559C009E1E35 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +51,7 @@
 		C7B2878926A14C96004B791A = {
 			isa = PBXGroup;
 			children = (
+				C7CB24B726A1559C009E1E35 /* README.md */,
 				C7B287AE26A14D1B004B791A /* FreeMeal (iOS).entitlements */,
 				C7B2878E26A14C96004B791A /* Shared */,
 				C7B2879726A14C97004B791A /* Products */,
@@ -153,6 +157,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7CB24B826A1559C009E1E35 /* README.md in Resources */,
 				C7B287A126A14C97004B791A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +166,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7CB24B926A1559C009E1E35 /* README.md in Resources */,
 				C7B287A226A14C97004B791A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
