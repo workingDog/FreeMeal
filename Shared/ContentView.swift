@@ -9,59 +9,46 @@ import SwiftUI
 
 
 struct ContentView: View {
-    
-    @State var meal: Meal?
+    @State var meals = [Meal]()
     
     var body: some View {
-        VStack (spacing: 50) {
-            if let theMeal = meal {
-                let materials = theMeal.getAllMaterials()
-                Text(theMeal.name ?? "no name meal")
-                Text(theMeal.category ?? "")
+        NavigationStack {
+            VStack (spacing: 30) {
                 List {
-                    ForEach(materials.keys.sorted(), id: \.self) { ingredient in
-                        if !ingredient.isEmpty {
-                            HStack {
-                                Text(ingredient)
-                                Spacer()
-                                Text(materials[ingredient] ?? "")
+                    ForEach(meals) { meal in
+                        Section(header: Text(meal.name ?? "").font(.title).bold().foregroundColor(.green)) {
+                            
+                            NavigationLink("Picture", destination: DetailView(meal: meal))
+                            
+                            ForEach(meal.materials.keys.sorted(), id: \.self) { ingredient in
+                                if !ingredient.isEmpty {
+                                    HStack {
+                                        Text(ingredient)
+                                        Spacer()
+                                        Text(meal.materials[ingredient] ?? "")
+                                    }
+                                }
                             }
+                            
                         }
                     }
                 }
-            }
-        }.padding(30)
+            }.padding(30)
+        }
         .task {
             let response: ApiResponse? = await fetchMeals()
-            if let resp = response, let firstmeal = resp.meals?.first {
-                meal = firstmeal
+            if let theMeals = response?.meals {
+                meals = theMeals
             }
         }
-        // .onAppear { loadData() }
     }
     
-//    func loadData() {
-//        guard let url = URL(string: "https://www.themealdb.com/api/json/v1/1/random.php") else {
-//            print("Your API end point is Invalid")
-//            return
-//        }
-//        let request = URLRequest(url: url)
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let data = data {
-//                if let response = try? JSONDecoder().decode(ApiResponse.self, from: data) {
-//                    DispatchQueue.main.async {
-//                        if let firstmeal = response.meals?.first {
-//                            meal = firstmeal
-//                        }
-//                    }
-//                    return
-//                }
-//            }
-//        }.resume()
-//    }
-    
     func fetchMeals<T: Decodable>() async -> T? {
-        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/random.php")!
+        // all meals that start with `a`
+        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/search.php?f=a")!
+        //  let url = URL(string: "https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert")!
+        // let url = URL(string:  "https://www.themealdb.com/api/json/v1/1/random.php")!
+        
         let request = URLRequest(url: url)
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
@@ -70,8 +57,7 @@ struct ContentView: View {
                 print(URLError(.badServerResponse))
                 return nil
             }
-            let results = try JSONDecoder().decode(T.self, from: data)
-            return results
+            return try JSONDecoder().decode(T.self, from: data)
         }
         catch {
             return nil
@@ -80,8 +66,23 @@ struct ContentView: View {
     
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct DetailView: View {
+    var meal: Meal
+    
+    var body: some View {
+        VStack (spacing: 40) {
+            if let imgurl = meal.mealThumb {
+                AsyncImage(url: URL(string: imgurl)) { image in
+                    image.resizable()
+                } placeholder: {
+                    Image(systemName: "photo.circle.fill").resizable()
+                }
+                .frame(width: 333, height: 333)
+                .padding(40)
+            } else {
+                Text("NO IMAGE THUMB").foregroundStyle(.blue)
+            }
+        }.padding(20)
     }
+    
 }
