@@ -8,6 +8,7 @@
 import Foundation
 
 
+
 struct ApiResponse: Decodable {
     var meals: [Meal]?
 }
