@@ -12,8 +12,15 @@ struct ApiResponse: Decodable {
     var meals: [Meal]?
 }
 
+struct Ingredient: Identifiable {
+    let id = UUID()
+    var name: String
+    var measure: String
+}
+
 struct Meal: Decodable, Identifiable {
     var id: String
+    
     var name: String?
     var drinkAlternate: String?
     var category: String?
@@ -27,7 +34,7 @@ struct Meal: Decodable, Identifiable {
     var creativeCommonsConfirmed: String?
     var dateModified: String?
     
-    var materials: [String:String]
+    var ingredients: [Ingredient]
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -46,16 +53,16 @@ struct Meal: Decodable, Identifiable {
         self.dateModified = try values.decodeIfPresent(String.self, forKey: .dateModified)
         
         // from: https://stackoverflow.com/questions/64265867/how-to-parse-json-using-custom-decoder-init-with-incrementing-keys-in-swift
-        self.materials = [:]
+        self.ingredients = []
         let container = try decoder.singleValueContainer()
-        let materialDict = try container.decode([String: String?].self)
+        let ingredDict = try container.decode([String: String?].self)
         var index = 1
         while
-            let ingredient = materialDict["strIngredient\(index)"] as? String,
-            let measure = materialDict["strMeasure\(index)"] as? String,
+            let ingredient = ingredDict["strIngredient\(index)"] as? String,
+            let measure = ingredDict["strMeasure\(index)"] as? String,
             !measure.isEmpty
         {
-            self.materials[ingredient] = measure
+            self.ingredients.append(Ingredient(name: ingredient, measure: measure))
             index += 1
         }
     }

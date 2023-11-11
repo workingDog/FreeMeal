@@ -16,21 +16,22 @@ struct ContentView: View {
             VStack (spacing: 30) {
                 List {
                     ForEach(meals) { meal in
-                        Section(header: Text(meal.name ?? "").font(.title).bold().foregroundColor(.green)) {
-                            
-                            NavigationLink("Picture", destination: DetailView(meal: meal))
-                            
-                            ForEach(meal.materials.keys.sorted(), id: \.self) { ingredient in
-                                if !ingredient.isEmpty {
-                                    HStack {
-                                        Text(ingredient)
-                                        Spacer()
-                                        Text(meal.materials[ingredient] ?? "")
+                        Section(header: Text(meal.name ?? "").font(.title).bold()
+                            .foregroundColor(.green)) {
+                                
+                                NavigationLink("Picture", destination: DetailView(meal: meal))
+                                
+                                ForEach(meal.ingredients) { ingredient in
+                                    if !ingredient.name.isEmpty {
+                                        HStack {
+                                            Text(ingredient.name)
+                                            Spacer()
+                                            Text(ingredient.measure)
+                                        }
                                     }
                                 }
+                                
                             }
-                            
-                        }
                     }
                 }
             }.padding(30)
@@ -82,6 +83,7 @@ struct DetailView: View {
             } else {
                 Text("NO IMAGE THUMB").foregroundStyle(.blue)
             }
+            Text(meal.instructions ?? "")
         }.padding(20)
     }
     
