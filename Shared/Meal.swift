@@ -13,14 +13,10 @@ struct ApiResponse: Decodable {
     var meals: [Meal]?
 }
 
-struct Ingredient: Decodable, Identifiable {
+struct Ingredient: Identifiable {
     let id = UUID()
     var name: String
     var measure: String
-    
-    enum CodingKeys: String, CodingKey {
-        case name, measure
-    }
 }
 
 struct Meal: Decodable, Identifiable {
