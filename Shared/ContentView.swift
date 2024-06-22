@@ -10,13 +10,27 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State var meals = [Meal]()
+    @State private var meals = [Meal]()
+    @State private var filter = "All"
+    @State private var allIngrd: [String] = []
+    
+    var filteredMeal: [Meal] {
+        return filter.isEmpty || filter == "All"
+        ? meals
+        : meals.filter { $0.ingredients.contains(where: {$0.name == filter}) }
+    }
     
     var body: some View {
         NavigationStack {
             VStack (spacing: 30) {
+                Picker("filter", selection: $filter) {
+                    ForEach(allIngrd, id: \.self) { filter in
+                        Text(filter)
+                    }
+                }
+              //  .pickerStyle(.wheel)
                 List {
-                    ForEach(meals) { meal in
+                    ForEach(filteredMeal) { meal in
                         Section(header: Text(meal.name ?? "").font(.title).bold()
                             .foregroundColor(.green)) {
                                 
@@ -26,12 +40,12 @@ struct ContentView: View {
                                     if !ingredient.name.isEmpty {
                                         HStack {
                                             Text(ingredient.name)
+                                                .foregroundColor(filter == ingredient.name ? .red : .black)
                                             Spacer()
                                             Text(ingredient.measure)
                                         }
                                     }
                                 }
-                                
                             }
                     }
                 }
@@ -41,13 +55,20 @@ struct ContentView: View {
             let response: ApiResponse? = await fetchMeals()
             if let theMeals = response?.meals {
                 meals = theMeals
+                // collect all possible unique Ingredient names
+                let setIngr = Set(theMeals.flatMap { $0.ingredients.compactMap { $0.name.isEmpty ? nil : $0.name } })
+                allIngrd = Array(setIngr)
+                allIngrd.append("All")
+                allIngrd.sort(by: <)
             }
         }
     }
     
     func fetchMeals<T: Decodable>() async -> T? {
-        // all meals that start with `a`
-        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/search.php?f=a")!
+        // for testing
+        
+        // all meals that start with `c`
+        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/search.php?f=c")!
         //  let url = URL(string: "https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert")!
         // let url = URL(string:  "https://www.themealdb.com/api/json/v1/1/random.php")!
         
