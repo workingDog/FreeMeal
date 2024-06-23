@@ -13,7 +13,7 @@ struct ApiResponse: Decodable {
     var meals: [Meal]?
 }
 
-struct Ingredient: Identifiable {
+struct Ingredient: Identifiable, Hashable {
     let id = UUID()
     var name: String
     var measure: String
