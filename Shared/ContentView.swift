@@ -4,20 +4,24 @@
 //
 //  Created by Ringo Wathelet on 2021/07/16.
 //
-
+import Foundation
 import SwiftUI
 
 
  struct ContentView: View {
      @State private var meals = [Meal]()
-     @State private var allIngrd: [Ingredient] = []
-     @State private var filter = Ingredient(name: "All", measure: "")
+     @State private var allIngrd: [String] = []
+     @State private var selections: [String] = []
      @State private var processing = false
      
      var filteredMeal: [Meal] {
-         return filter.name.isEmpty || filter.name == "All"
+         return selections.isEmpty
          ? meals
-         : meals.filter { $0.ingredients.contains(where: {$0.name == filter.name}) }
+         : meals.filter { meal in
+             selections.allSatisfy{ select in
+                 meal.ingredients.contains{ $0.name == select }
+             }
+         }
      }
 
      var body: some View {
@@ -26,16 +30,11 @@ import SwiftUI
                  if processing {
                      ProgressView()
                  } else {
-                     HStack {
-                         Text("Ingredients")
-                         Picker("filter", selection: $filter) {
-                             ForEach(allIngrd) { filter in
-                                 Text(filter.name).tag(filter)
-                             }
-                         }
-                         .pickerStyle(.wheel)
-                         Spacer()
-                     }
+                     VStack {
+                         Text("Ingredients selections")
+                         IngredientsList(allIngrd: $allIngrd, selections: $selections)
+                     }.frame(height: 200)
+                     
                      List {
                          ForEach(filteredMeal) { meal in
                              Section(header: Text(meal.name ?? "").font(.title).bold()
@@ -47,7 +46,7 @@ import SwiftUI
                                         if !ingredient.name.isEmpty {
                                             HStack {
                                                 Text(ingredient.name)
-                                                    .foregroundColor(filter.name == ingredient.name ? .red : .black)
+                                                    .foregroundColor(selections.contains(ingredient.name) ? .red : .black)
                                                 Spacer()
                                                 Text(ingredient.measure)
                                             }
@@ -66,14 +65,13 @@ import SwiftUI
                  meals = theMeals
                  // collect all possible unique Ingredient names
                  var setIngr = Set(theMeals.flatMap { $0.ingredients.compactMap { $0.name.isEmpty ? nil : $0.name } })
-                 setIngr.insert("All")
-                 allIngrd = Array(setIngr).map{Ingredient(name: $0, measure: "")}
-                 allIngrd.sort{ $0.name < $1.name }
+                 allIngrd = Array(setIngr)
+                 allIngrd.sort{ $0 < $1 }
              }
              processing = false
          }
      }
-     
+
      func fetchMeals<T: Decodable>() async -> T? {
          // for testing
          
